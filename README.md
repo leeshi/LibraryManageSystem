@@ -1,4 +1,2 @@
-### this is readme file
-### NOW I HAVE BEEN MODIFIED!
-### MODIFIED AGAIN
-### first addment
+### 个人的java小项目，图书管理系统，数据库使用mysql。
+未完成，后面补充

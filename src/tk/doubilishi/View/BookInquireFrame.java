@@ -13,6 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import tk.doubilishi.Dao.BookDao;
 import tk.doubilishi.Model.Book;
 import tk.doubilishi.Util.DbUtil;
+import tk.doubilishi.Util.StringUtil;
 
 import java.awt.Font;
 import javax.swing.JTextField;
@@ -105,6 +106,7 @@ public class BookInquireFrame extends JFrame{
 		getContentPane().add(priceField);
 		
 		descArea = new JTextArea();
+		descArea.setLineWrap(true);
 		descArea.setFont(new Font("YouYuan", Font.PLAIN, 28));
 		descArea.setBounds(597, 736, 466, 402);
 		getContentPane().add(descArea);
@@ -130,32 +132,77 @@ public class BookInquireFrame extends JFrame{
 			String id = idField.getText();
 			String name = nameField.getText();
 			String desc = descArea.getText();
-			float price = Float.valueOf(priceField.getText());
 			String auther = autherField.getText();
-			int typeID = 0;
-			
 			String type = typeField.getText();
-			if(type.equals(""))
-				;
-			else
-				typeID=Integer.valueOf(type);
+			String price = priceField.getText();
 			
-			clearField();
-			
-			Book book = new Book(name,auther,desc,price,typeID,id);
-			System.out.println(book);
-			try {
-				bDao.addBook(book);
-			} catch (SQLException e1) {
-				descArea.setText("键值可能发生了重复，请检查");
-				e1.printStackTrace();
+			if(!StringUtil.isNumber(price)||!StringUtil.isInteger(type)) {
+				descArea.setText("请检查输入的数值是否完备");
+				return;
 			}
+			else
+			{
+				try {
+					Book book = new Book(name,auther,desc,Float.parseFloat(price),Integer.parseInt(type),id);
+					System.out.println(book);
+					bDao.addBook(book);
+					clearField();
+				} catch (SQLException e1) {
+					descArea.setText("键值可能发生了重复，请检查");
+					e1.printStackTrace();
+				}
+			}
+			
 		});
 		getContentPane().add(addButton);
 		
 		updateButton = new JButton("\u66F4\u65B0\u4E66\u7C4D");
 		updateButton.setFont(new Font("STZhongsong", Font.PLAIN, 30));
 		updateButton.setBounds(275, 898, 233, 61);
+		updateButton.addActionListener((e)->{
+			String id = idField.getText();
+			String name = nameField.getText();
+			String desc = descArea.getText();
+			String auther = autherField.getText();
+			String type = typeField.getText();
+			String price = priceField.getText();
+			//先取得相关的图书再更新
+			try {
+				if(!this.bList.isEmpty()) {
+					Book book = this.bList.get(0);
+					System.out.println(book);
+					if(!name.isEmpty())
+						book.setName(name);
+					if(!desc.isEmpty())
+						book.setDesc(desc);
+					if(!auther.isEmpty())
+						book.setAuther(auther);
+					//判断价格是否符合格式
+					if(!price.isEmpty())
+						if(StringUtil.isNumber(price))
+							book.setPrice(Float.parseFloat(price));
+						else {
+							descArea.setText("请输入正确的价格");
+							return;
+						}
+					//判断类别是否符合格式
+					if(!type.isEmpty()) {
+						if(StringUtil.isInteger(type))
+							book.setType(Integer.parseInt(type));
+						else {
+							descArea.setText("请输入正确的类别");
+							return;
+						}
+					}
+					bDao.updateBook(book);
+					loadBooks();
+					updateTable();
+				}
+			}catch(SQLException e1) {
+				e1.printStackTrace();
+				descArea.setText("数据库可能出错，请重启");
+			}
+		});
 		getContentPane().add(updateButton);
 		
 		deleteButton = new JButton("\u5220\u9664\u4E66\u7C4D(id)");
@@ -197,11 +244,37 @@ public class BookInquireFrame extends JFrame{
 		autherSearchButton = new JButton("\u641C\u7D22\u4F5C\u8005");
 		autherSearchButton.setFont(new Font("STZhongsong", Font.PLAIN, 30));
 		autherSearchButton.setBounds(22, 898, 233, 61);
+		autherSearchButton.addActionListener((e)->{
+			String auther = autherField.getText();
+			autherField.setText("");
+			try{
+				this.bList = bDao.searchWithAuther(auther);
+				loadBooks();
+				updateTable();
+				
+			}catch(SQLException e1){
+				descArea.setText("数据库可能出错，请重启");
+				e1.printStackTrace();
+			}
+			autherField.setText("");
+		});
 		getContentPane().add(autherSearchButton);
 		
 		idGetButton = new JButton("\u641C\u7D22ID");
 		idGetButton.setFont(new Font("STZhongsong", Font.PLAIN, 30));
 		idGetButton.setBounds(22, 980, 233, 61);
+		idGetButton.addActionListener((e)->{
+			String id = idField.getText();
+			try {
+				this.bList = new LinkedList<Book>();
+				Book book = bDao.getBook(id);
+				if(book!=null)
+					bList.add(book);
+				loadBooks();
+				updateTable();
+				
+			}catch(SQLException e1) {descArea.setText("数据库可能出错，请重启");e1.printStackTrace();}
+		});
 		getContentPane().add(idGetButton);
 		
 		getAllButton = new JButton("\u663E\u793A\u5168\u90E8");

@@ -7,6 +7,7 @@ import tk.doubilishi.Model.User;
 import tk.doubilishi.Util.*;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -24,8 +25,6 @@ public class LoginFrame extends JFrame{
 	private JPasswordField passwordField;
 	
 	public LoginFrame() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.CENTER);
 		Toolkit kit = Toolkit.getDefaultToolkit();
@@ -113,7 +112,7 @@ public class LoginFrame extends JFrame{
 			System.exit(-1);
 		}
 	}
-	
+		
 	/*
 	 * 检查密码是否正确
 	 */

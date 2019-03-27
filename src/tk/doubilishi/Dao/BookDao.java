@@ -46,6 +46,7 @@ public class BookDao {
 		pstmt.setFloat(4, book.getPrice());
 		pstmt.setInt(5, book.getType());
 		pstmt.setString(6, String.valueOf(2));
+		System.out.println(pstmt.toString());
 		
 		return pstmt.executeUpdate();
 	}
@@ -55,9 +56,11 @@ public class BookDao {
 		Statement state = conn.createStatement();
 		
 		ResultSet rs = state.executeQuery(sql);
-		if(rs.next()) 
-			return new Book(rs.getString("b_name"),rs.getString("b_auther")
+		if(rs.next()) {
+			Book book =  new Book(rs.getString("b_name"),rs.getString("b_auther")
 					,rs.getString("b_desc"),rs.getFloat("b_price"),rs.getInt("b_type"),rs.getString("b_id"));
+			return book;
+		}
 		else
 			return null;
 	}
@@ -132,6 +135,24 @@ public class BookDao {
 			new Book(rs.getString("b_name"),rs.getString("b_auther")
 					,rs.getString("b_desc"),rs.getFloat("b_price"),rs.getInt("b_type"),rs.getString("b_id"));
 		}
+		return bList;
+	}
+	
+	/*
+	 * 根据提供的变量来搜索
+	 * @param 一个名称和作者的字符串,{name,auther}
+	 */
+	public LinkedList<Book> searchBook(String[] args) throws SQLException{
+		String sql = "select * from t_book where b_name like '%"+args[0]+"%' and b_auther like '%"+args[1]+"%'";
+		
+		Statement state = conn.createStatement();
+		ResultSet rs = state.executeQuery(sql);
+		LinkedList<Book> bList = new LinkedList<>();
+		while(rs.next()) {
+			Book book = new Book(rs.getString("b_name"),rs.getString("b_auther")
+					,rs.getString("b_desc"),rs.getFloat("b_price"),rs.getInt("b_type"),rs.getString("b_id"));
+			bList.add(book);
+			}
 		return bList;
 	}
 	

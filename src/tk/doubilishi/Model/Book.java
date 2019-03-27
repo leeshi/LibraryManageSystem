@@ -33,6 +33,21 @@ public class Book {
 	public void setId(String bID) {
 		this.b_id = bID;
 	}
+	public void setName(String b_name) {
+		this.b_name = b_name;
+	}
+	public void setAuther(String b_auther) {
+		this.b_auther = b_auther;
+	}
+	public void setPrice(float price) {
+		this.b_price = price;
+	}
+	public void setType(int typeId) {
+		this.BookTypeId = typeId;
+	}
+	public void setDesc(String desc) {
+		this.b_desc = desc;
+	}
 	
 	/*
 	 * geter

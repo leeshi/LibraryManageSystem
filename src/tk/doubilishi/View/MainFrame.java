@@ -43,28 +43,38 @@ public class MainFrame extends JFrame{
 		menuBar.add(mnNewMenu);
 		
 		/***************进入图书类别管理界面*************/
-		JMenuItem mntmNewMenuItem = new JMenuItem("\u56FE\u4E66\u7C7B\u522B\u7BA1\u7406");
-		mntmNewMenuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				BookTypeFrame btF = new BookTypeFrame(conn);
-				btF.setVisible(true);
-			}
-		});
-		mntmNewMenuItem.setFont(new Font("STZhongsong", Font.PLAIN, 38));
-		mnNewMenu.add(mntmNewMenuItem);
-		
-		JMenu mnNewMenu_2 = new JMenu("\u4E66\u7C4D\u7BA1\u7406");
-		mnNewMenu_2.setFont(new Font("STZhongsong", Font.PLAIN, 38));
-		mnNewMenu.add(mnNewMenu_2);
-		
-		JMenuItem mntmNewMenuItem_3 = new JMenuItem("\u4E66\u7C4D\u7EF4\u62A4");
-		mntmNewMenuItem_3.setFont(new Font("STZhongsong", Font.PLAIN, 38));
-		mnNewMenu_2.add(mntmNewMenuItem_3);
-		
-		JMenuItem mntmNewMenuItem_4 = new JMenuItem("\u4E66\u7C4D\u67E5\u8BE2");
-		mntmNewMenuItem_4.setFont(new Font("STZhongsong", Font.PLAIN, 38));
-		mnNewMenu_2.add(mntmNewMenuItem_4);
-		
+		if(user.getId()==1) {
+			JMenuItem mntmNewMenuItem = new JMenuItem("\u56FE\u4E66\u7C7B\u522B\u7BA1\u7406");
+			mntmNewMenuItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					BookTypeFrame btF = new BookTypeFrame(conn);
+					btF.setVisible(true);
+				}
+			});
+			mntmNewMenuItem.setFont(new Font("STZhongsong", Font.PLAIN, 38));
+			mnNewMenu.add(mntmNewMenuItem);
+			
+			JMenu mnNewMenu_2 = new JMenu("\u4E66\u7C4D\u7BA1\u7406");
+			mnNewMenu_2.setFont(new Font("STZhongsong", Font.PLAIN, 38));
+			mnNewMenu.add(mnNewMenu_2);
+			
+			JMenuItem mntmNewMenuItem_4 = new JMenuItem("\u4E66\u7C4D\u7EF4\u62A4");
+			mntmNewMenuItem_4.addActionListener((e)->{
+				JFrame inquireFrm = new BookInquireFrame(this.conn);
+				inquireFrm.setVisible(true);
+			});
+			mntmNewMenuItem_4.setFont(new Font("STZhongsong", Font.PLAIN, 38));
+			mnNewMenu_2.add(mntmNewMenuItem_4);
+		}
+		/***************普通用户进入借阅界面*************/
+		else {
+			JMenuItem commonMenuItem = new JMenuItem("借阅、查询图书");
+			commonMenuItem.addActionListener((e)->{
+					new CommonUserFrame(conn,user.getId()).setVisible(true);
+			});
+			commonMenuItem.setFont(new Font("STZhongsong", Font.PLAIN, 38));
+			mnNewMenu.add(commonMenuItem);
+		}
 		/************安全退出*******************/
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("\u5B89\u5168\u9000\u51FA");
 		mntmNewMenuItem_1.addActionListener(new ActionListener() {
